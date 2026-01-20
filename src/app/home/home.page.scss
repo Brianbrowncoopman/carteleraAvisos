@@ -1,27 +1,46 @@
-#container {
-  text-align: center;
-
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+// Clases para los fondos pasteles según horario
+.bg-madrugada { 
+    --background: #f3e5f5; // Morado muy suave
+    background-color: #f3e5f5 !important; 
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+.bg-manana { 
+    --background: #e8f5e9; // Verde muy suave
+    background-color: #e8f5e9 !important; 
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
+.bg-tarde { 
+    --background: #fff3e0; // Naranja muy suave
+    background-color: #fff3e0 !important; 
 }
 
-#container a {
-  text-decoration: none;
+.bg-noche { 
+    --background: #e3f2fd; // Azul muy suave
+    background-color: #e3f2fd !important; 
+}
+
+// Estilos generales para las tarjetas de la lista
+ion-card {
+    margin: 12px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, background-color 0.4s ease;
+
+    &:active {
+        transform: scale(0.98); // Efecto de pulsación al hacer clic
+    }
+}
+
+// Para que el texto no se vea apretado
+ion-label {
+    h2 {
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+}
+
+// Ajuste para las miniaturas
+ion-thumbnail {
+    --size: 56px;
+    border: 1px solid rgba(0,0,0,0.05);
 }

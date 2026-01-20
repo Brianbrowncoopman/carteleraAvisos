@@ -99,4 +99,19 @@ export class HomePage implements OnInit {
     }, 300)
     
   }
+
+  getColorPorHorario(fecha: Date | string): string {
+    const date = new Date(fecha);
+    const hora = date.getHours();
+
+    if (hora >= 0 && hora < 6) {
+      return 'bg-madrugada'; 
+    } else if (hora >= 6 && hora < 12) {
+      return 'bg-manana';
+    } else if (hora >= 12 && hora < 18){
+      return 'bg-tarde'; 
+    } else {
+      return 'bg-noche'
+    }
+  }
 }

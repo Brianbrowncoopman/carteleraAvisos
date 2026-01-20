@@ -1,22 +1,31 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Cartelera Peor es Nada</ion-title>
+    <ion-title class="ion-text-center">Cartelera De la vecindad</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-card *ngFor="let p of publicaciones" (click)="verDetalle(p)">
-    <ion-card-content>
-      <ion-list lines="none">
-        <ion-item>
+  <div *ngIf="publicaciones.length === 0" class="ion-text-center ion-padding">
+    <ion-icon name="alert-circle-outline" style="font-size: 64px; color: gray;"></ion-icon>
+    <p>No hay avisos publicados en la comunidad.</p>
+  </div>
 
+  <ion-card *ngFor="let p of publicaciones" 
+            (click)="verDetalle(p)" 
+            [ngClass]="getColorPorHorario(p.fecha)"
+            style="cursor: pointer; margin-bottom: 15px;">
+    
+    <ion-card-content style="padding: 8px;">
+      <ion-list lines="none" style="background: transparent;">
+        <ion-item style="--background: transparent;">
+          
           <ion-thumbnail slot="start" style="--border-radius: 8px;">
-            <img [src]="p.imagen" alt="Imagen del aviso" style="object-fit: cover;"/>
+            <img [src]="p.imagen" alt="Foto aviso" style="object-fit: cover;"/>
           </ion-thumbnail>
 
           <ion-label>
-            <p><ion-note>Cuando: {{ p.fecha | date: 'dd/MM/yyyy HH:mm' }}</ion-note></p>
-            <h2 style="font-weight: bold; color: var(--ion-color-dark);">
+            <p><ion-note style="color: #444;">Cuando: {{ p.fecha | date: 'dd/MM/yyyy HH:mm' }}</ion-note></p>
+            <h2 style="font-weight: bold; font-size: 1.1em; color: #000;">
               Que: {{ p.titulo }}
             </h2>
           </ion-label>
@@ -25,6 +34,7 @@
                       (click)="$event.stopPropagation(); confirmarEliminacion(p.id)">
             <ion-icon name="trash-outline"></ion-icon>
           </ion-button>
+          
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -36,22 +46,36 @@
         <ion-toolbar color="secondary">
           <ion-title>Detalle del Aviso</ion-title>
           <ion-buttons slot="end">
-            <ion-button (click)="cerrarModal()">Cerrar</ion-button>
+            <ion-button (click)="cerrarModal()" style="font-weight: bold;">Cerrar</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
 
       <ion-content class="ion-padding" *ngIf="publicacionSeleccionada">
-        <img [src]="publicacionSeleccionada.imagen" style="width: 100%; border-radius: 8px;"/>
+        <div class="ion-text-center">
+          <img [src]="publicacionSeleccionada.imagen" 
+               style="width: 100%; max-height: 300px; border-radius: 12px; object-fit: contain; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
+        </div>
         
         <div class="ion-margin-top">
-          <p><ion-note>Publicado el: {{ publicacionSeleccionada.fecha | date: 'medium' }}</ion-note></p>
-          <h1>{{ publicacionSeleccionada.titulo }}</h1>
-          <hr>
-          <p style="font-size: 1.1em;">{{ publicacionSeleccionada.descripcion }}</p>
+          <p>
+            <ion-note style="font-weight: bold;">
+              Cuando: {{ publicacionSeleccionada.fecha | date: 'dd/MM/yyyy HH:mm' }}
+            </ion-note>
+          </p>
+          
+          <h1 style="margin-top: 5px; color: var(--ion-color-secondary-shade); font-weight: bold;">
+            Que: {{ publicacionSeleccionada.titulo }}
+          </h1>
+
+          <div style="width: 50px; height: 3px; background: var(--ion-color-secondary); margin: 15px 0;"></div>
+          
+          <p style="font-size: 1.15em; line-height: 1.5; color: #333; white-space: pre-wrap;">
+            {{ publicacionSeleccionada.descripcion }}
+          </p>
         </div>
 
-        <div class="ion-margin-top">
+        <div class="ion-margin-top" style="padding-bottom: 20px;">
           <ion-button expand="block" color="primary" (click)="editar(publicacionSeleccionada)">
             <ion-icon name="create-outline" slot="start"></ion-icon>
             Editar Mensaje
@@ -59,7 +83,7 @@
           
           <ion-button expand="block" color="danger" fill="outline" (click)="confirmarEliminacion(publicacionSeleccionada.id)">
             <ion-icon name="trash-outline" slot="start"></ion-icon>
-            Eliminar Aviso
+            Eliminar Aviso Permanente
           </ion-button>
         </div>
       </ion-content>
@@ -71,4 +95,5 @@
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+
 </ion-content>
