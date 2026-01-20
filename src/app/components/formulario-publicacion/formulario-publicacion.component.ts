@@ -6,6 +6,7 @@ import { PublicacionesService } from 'src/app/services/publicaciones';
 import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { camera, save } from 'ionicons/icons';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-formulario-publicacion',
@@ -18,11 +19,13 @@ export class FormularioPublicacionComponent  implements OnInit {
 
   public form: FormGroup;
   public fotoSeleccionada: string = '';
+  public editandoId: number | null = null;
 
   constructor(
     private fb: FormBuilder,
     private publicacionesService: PublicacionesService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) { 
     addIcons({ camera, save })
 
@@ -32,7 +35,18 @@ export class FormularioPublicacionComponent  implements OnInit {
     })
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state) {
+      const p = navigation.extras.state['publicacion'];
+      this.editandoId = p.id;
+      this.fotoSeleccionada = p.imagen;
+      this.form.patchValue({
+        titulo: p.titulo,
+        descripcion: p.descripcion
+      });
+    }
+  }
 
   async capturarFoto(){
     this.fotoSeleccionada = await this.publicacionesService.tomarFoto();
@@ -41,11 +55,21 @@ export class FormularioPublicacionComponent  implements OnInit {
   async guardar(){
     if (this.form.valid && this.fotoSeleccionada){
       const { titulo, descripcion } = this.form.value;
-      await this.publicacionesService.guardarPublicacion(
-        titulo,
-        descripcion,
-        this.fotoSeleccionada
-      );
+
+      if (this.editandoId) {
+          await this.publicacionesService.actualizarPublicacion(
+            this.editandoId,
+            titulo,
+            descripcion,
+            this.fotoSeleccionada
+          );
+      } else {  
+          await this.publicacionesService.guardarPublicacion(
+            titulo,
+            descripcion,
+            this.fotoSeleccionada
+          );
+        }
       this.router.navigate(['/home']);
     }
   }

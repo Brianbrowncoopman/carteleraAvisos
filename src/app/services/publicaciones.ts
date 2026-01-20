@@ -49,6 +49,24 @@ export class PublicacionesService {
     await this.sincronizarStorage();
   }
 
+  async actualizarPublicacion(
+    id: number,
+    titulo: string,
+    descripcion: string,
+    imagen: string
+  ){
+    const index = this._publicaciones.findIndex(p => p.id === id);
+    if (index !== -1) {
+      this._publicaciones[index] = {
+        ...this._publicaciones[index],
+        titulo,
+        descripcion,
+        imagen
+      };
+      await this.sincronizarStorage();
+    }
+  }
+
   private async sincronizarStorage() {
     await Preferences.set({
       key: this.STORAGE_KEY,
