@@ -7,7 +7,7 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
   providedIn: 'root',
 })
 export class PublicacionesService {
-  private _publicaciones: any[] = [];
+  private _publicaciones: Publicacion[] = [];
   private readonly STORAGE_KEY = 'avisos_publicaciones';
 
   constructor(){}
@@ -44,7 +44,7 @@ export class PublicacionesService {
     return this._publicaciones;
   }
 
-  async aliminarPublicacion(id: number) {
+  async eliminarPublicacion(id: number) {
     this._publicaciones = this._publicaciones.filter(p => p.id !== id);
     await this.sincronizarStorage();
   }

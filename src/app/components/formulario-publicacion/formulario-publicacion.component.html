@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Nueva Publicacion</ion-title>
+  </ion-toolbar>
+</ion-header> 
+
+<ion-content class="ion-padding">
+  <form [formGroup]="form" (ngSubmit)="guardar()">
+
+    <ion-item lines="floating">
+      <ion-label position="stacked">Titulo del aviso</ion-label>
+      <ion-input formControlName="titulo" placeholder="Pedrito perdido"></ion-input>
+    </ion-item>
+    <ion-text color="danger" *ngIf="form.get('titulo')?.touched && form.get('titulo')?.errors?.['minlength']">
+      <small style="margin-left: 15px;">Minimo 5 caracteres.</small>
+    </ion-text>
+
+    <div class="ion-text-center ion-margin-top">
+      <ion-button (click)="capturarFoto()" color="secondary" type="button">
+        <ion-icon name="camera" slot="start"></ion-icon>
+        Tomar Foto
+       </ion-button>
+    </div>
+
+    <div *ngIf="fotoSeleccionada" class="ion-text-center ion-margin">
+      <img [src]="fotoSeleccionada" style="max-width: 100%; border-radius: 10px; border: 2px solid #ccc;"/>
+    </div>
+
+    <ion-item lines="floating">
+      <ion-label position="stacked">Descripción detallada</ion-label>
+      <ion-textarea formControlName="descripcion" placeholder="Describa el aviso aqui..."></ion-textarea>
+    </ion-item>
+    <ion-text color="danger" *ngIf="form.get('descripcion')?.touched && form.get('descripcion')?.errors?.['minlength']">
+      <small style="margin-left: 15px;">Minimo 20 caracteres.</small>
+    </ion-text>
+
+    <ion-button expand="block" type="submit" [disabled]="form.invalid || !fotoSeleccionada" class="ion-margin-top">
+      <ion-icon name="save" slot="start"></ion-icon>
+      Publicar aviso
+    </ion-button>
+
+
+  </form>
+</ion-content>
