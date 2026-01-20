@@ -1,67 +1,79 @@
 import { Component, OnInit } from '@angular/core';
-import { Publicacion } from '../models/publicacion.model';
-import { PublicacionesService } from '../services/publicaciones';
-import { addIcons } from 'ionicons';
-import { add, trashOutline,createOutline } from 'ionicons/icons';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router, NavigationExtras } from '@angular/router'; 
+import { RouterModule, Router, NavigationExtras } from '@angular/router';
 import { 
   IonHeader, IonToolbar, IonTitle, IonContent, 
   IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent,
-  IonButton, IonIcon, IonFab, IonFabButton, AlertController
+  IonButton, IonIcon, IonFab, IonFabButton,
+  IonModal, IonItem, IonLabel, IonList, IonNote, IonButtons, IonThumbnail,
+  AlertController 
 } from '@ionic/angular/standalone';
-
-
+import { PublicacionesService } from '../services/publicaciones';
+import { Publicacion } from '../models/publicacion.model';
+import { addIcons } from 'ionicons';
+import { trashOutline, add, createOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [CommonModule, 
+  imports: [
+    CommonModule, 
     RouterModule,
     IonHeader, IonToolbar, IonTitle, IonContent, 
     IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent,
-    IonButton, IonIcon, IonFab, IonFabButton],
+    IonButton, IonIcon, IonFab, IonFabButton,
+    IonModal, IonItem, IonLabel, IonList, IonNote, IonButtons,IonThumbnail
+  ],
 })
 export class HomePage implements OnInit {
   publicaciones: Publicacion[] = [];
+  publicacionSeleccionada: Publicacion | null = null;
+  isModalOpen = false;
 
   constructor(
     private publicacionesService: PublicacionesService,
-    private router: Router,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private router: Router
   ) {
     addIcons({ trashOutline, add, createOutline });
   }
 
   async ngOnInit() {
-    await this.obtenerPublicaciones()
+    await this.obtenerPublicaciones();
   }
 
-  async ionViewWillEnter(){
-    await this.obtenerPublicaciones()
+  async ionViewWillEnter() {
+    await this.obtenerPublicaciones();
   }
 
-  async obtenerPublicaciones(){
+  async obtenerPublicaciones() {
     this.publicaciones = await this.publicacionesService.cargarPublicaciones();
   }
 
-  async confirmarEliminacion(id: number){
+  // ESTE ES EL MÉTODO QUE TE FALTABA
+  verDetalle(p: Publicacion) {
+    this.publicacionSeleccionada = p;
+    this.isModalOpen = true;
+  }
+
+  /*cerrarModal() {
+    this.isModalOpen = false;
+  }*/
+
+  async confirmarEliminacion(id: number) {
     const alert = await this.alertController.create({
       header: 'Confirmar eliminación',
-      message: '¿Estás seguro de que deseas eliminar esta publicación?',
+      message: '¿Estás seguro de que deseas borrar este aviso?',
       buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          cssClass: 'secondary'
-        }, 
+        { text: 'Cancelar', role: 'cancel' },
         {
           text: 'Eliminar',
           handler: async () => {
             await this.publicacionesService.eliminarPublicacion(id);
             await this.obtenerPublicaciones();
+            this.isModalOpen = false; // Cerramos el modal si se borra desde ahí
           }
         }
       ]
@@ -69,10 +81,22 @@ export class HomePage implements OnInit {
     await alert.present();
   }
 
-  editar(publicacion: Publicacion){
+  cerrarModal() {
+    this.isModalOpen = false;
+  }
+
+
+ 
+
+  editar(publicacion: Publicacion) {
+    this.isModalOpen = false;
+
     const extras: NavigationExtras = {
-    state: { publicacion } 
-  };
-    this.router.navigate(['/nuevo'], extras);
+      state: { publicacion }
+    };
+    setTimeout(() => {
+      this.router.navigate(['/nuevo'], extras);
+    }, 300)
+    
   }
 }
