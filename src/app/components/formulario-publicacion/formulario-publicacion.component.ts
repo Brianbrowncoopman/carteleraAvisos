@@ -1,19 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PublicacionesService } from 'src/app/services/publicaciones';
 import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { camera, save } from 'ionicons/icons';
 import { ActivatedRoute } from '@angular/router';
+import { 
+  IonHeader, IonToolbar, IonButtons, IonBackButton, 
+  IonTitle, IonContent, IonItem, IonLabel, IonInput, 
+  IonButton, IonIcon, IonText, IonTextarea 
+} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-formulario-publicacion',
   templateUrl: './formulario-publicacion.component.html',
   styleUrls: ['./formulario-publicacion.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, ReactiveFormsModule]
+  imports: [ CommonModule, ReactiveFormsModule, IonHeader, IonToolbar, IonButtons, IonBackButton, 
+    IonTitle, IonContent, IonItem, IonLabel, IonInput, 
+    IonButton, IonIcon, IonText, IonTextarea]
 })
 export class FormularioPublicacionComponent  implements OnInit {
 

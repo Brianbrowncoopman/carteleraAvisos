@@ -1,0 +1,50 @@
+<ion-card (click)="verDetalle()" [ngClass]="getColorPorHorario(p.fecha)" style="cursor: pointer; margin-bottom: 15px;">
+  <ion-card-content style="padding: 8px;">
+    <ion-list lines="none" style="background: transparent;">
+      <ion-item style="--background: transparent;">
+        <ion-thumbnail slot="start" style="--border-radius: 8px;">
+          <img [src]="p.imagen" alt="Foto aviso" style="object-fit: cover;"/>
+        </ion-thumbnail>
+        <ion-label>
+          <p><ion-note style="color: #444;">Cuando: {{ p.fecha | date: 'dd/MM/yyyy HH:mm' }}</ion-note></p>
+          <h2 style="font-weight: bold; font-size: 1.1em; color: #000;">Que: {{ p.titulo }}</h2>
+        </ion-label>
+        <ion-button slot="end" color="danger" fill="clear" (click)="$event.stopPropagation(); confirmarEliminacion(p.id)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
+
+<ion-modal [isOpen]="isModalOpen" (ionModalDidDismiss)="isModalOpen = false">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="secondary">
+        <ion-title>Detalle del Aviso</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="cerrarModal()" style="font-weight: bold;">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <div class="ion-text-center">
+        <img [src]="p.imagen" style="width: 100%; max-height: 300px; border-radius: 12px; object-fit: contain;"/>
+      </div>
+      <div class="ion-margin-top">
+        <p><ion-note style="font-weight: bold;">Cuando: {{ p.fecha | date: 'dd/MM/yyyy HH:mm' }}</ion-note></p>
+        <h1 style="color: var(--ion-color-secondary-shade); font-weight: bold;">Que: {{ p.titulo }}</h1>
+        <p style="font-size: 1.15em; line-height: 1.5; color: #333; white-space: pre-wrap;">{{ p.descripcion }}</p>
+      </div>
+      <div class="ion-margin-top">
+        <ion-button expand="block" color="primary" (click)="editar()">
+          <ion-icon name="create-outline" slot="start"></ion-icon> Editar Mensaje
+        </ion-button>
+        <ion-button expand="block" color="danger" fill="outline" (click)="confirmarEliminacion(p.id)">
+          <ion-icon name="trash-outline" slot="start"></ion-icon> Eliminar Aviso
+        </ion-button>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

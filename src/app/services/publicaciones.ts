@@ -9,8 +9,15 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 export class PublicacionesService {
   private _publicaciones: Publicacion[] = [];
   private readonly STORAGE_KEY = 'avisos_publicaciones';
+  private _contadorId = 0;
 
   constructor(){}
+
+  private generarIdUnico():number {
+    this._contadorId++;
+    return Date.now() + this._contadorId;
+  }
+
 
   async tomarFoto(): Promise<string> {
     const image = await Camera.getPhoto({
@@ -27,13 +34,20 @@ export class PublicacionesService {
     descripcion: string,
     imagen: string
   ){
+
+    const ahora = Date.now();
+
     const nueva: Publicacion ={
-      id: Date.now(),
+      id: this.generarIdUnico(),
       titulo,
       descripcion,
       imagen,
-      fecha: new Date()
+      fecha: ahora
     };
+
+    console.log(`Guardando: Id=${nueva.id}, Fecha=${new Date(nueva.fecha).toLocaleString()}`);
+
+
     this._publicaciones.unshift(nueva);
     await this.sincronizarStorage();
   }
@@ -41,6 +55,12 @@ export class PublicacionesService {
   async cargarPublicaciones(): Promise<Publicacion[]>{
     const { value } = await Preferences.get({key: this.STORAGE_KEY });
     this._publicaciones = value ? JSON.parse(value) : [];
+
+    console.log(`Publicaciones cargadas:`, this._publicaciones.length);
+    this._publicaciones.forEach(p => {
+      console.log(`- ID: ${p.id}, Fecha: ${new Date(p.fecha).toLocaleString()}`);
+    });
+
     return this._publicaciones;
   }
 
@@ -57,6 +77,7 @@ export class PublicacionesService {
   ){
     const index = this._publicaciones.findIndex(p => p.id === id);
     if (index !== -1) {
+      console.log(`Actualizando ID: ${id}`);
       this._publicaciones[index] = {
         ...this._publicaciones[index],
         titulo,

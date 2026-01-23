@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationExtras } from '@angular/router';
+import { PublicacionItemComponent } from '../components/publicacion-item-component/publicacion-item.component';
 import { 
   IonHeader, IonToolbar, IonTitle, IonContent, 
-  IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent,
+  IonCard,  IonCardContent,
   IonButton, IonIcon, IonFab, IonFabButton,
   IonModal, IonItem, IonLabel, IonList, IonNote, IonButtons, IonThumbnail,
   AlertController 
@@ -11,7 +12,7 @@ import {
 import { PublicacionesService } from '../services/publicaciones';
 import { Publicacion } from '../models/publicacion.model';
 import { addIcons } from 'ionicons';
-import { trashOutline, add, createOutline } from 'ionicons/icons';
+import { trashOutline, add, createOutline, alertCircleOutline, time } from 'ionicons/icons';
 
 @Component({
   selector: 'app-home',
@@ -21,10 +22,14 @@ import { trashOutline, add, createOutline } from 'ionicons/icons';
   imports: [
     CommonModule, 
     RouterModule,
-    IonHeader, IonToolbar, IonTitle, IonContent, 
-    IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent,
-    IonButton, IonIcon, IonFab, IonFabButton,
-    IonModal, IonItem, IonLabel, IonList, IonNote, IonButtons,IonThumbnail
+    PublicacionItemComponent, 
+    IonHeader, 
+    IonToolbar, 
+    IonTitle, 
+    IonContent, 
+    IonIcon, 
+    IonFab, 
+    IonFabButton
   ],
 })
 export class HomePage implements OnInit {
@@ -35,13 +40,18 @@ export class HomePage implements OnInit {
   constructor(
     private publicacionesService: PublicacionesService,
     private alertController: AlertController,
-    private router: Router
+    private router: Router,
+    private cdRef: ChangeDetectorRef,
   ) {
-    addIcons({ trashOutline, add, createOutline });
+    addIcons({ trashOutline, add, createOutline, alertCircleOutline });
   }
 
   async ngOnInit() {
     await this.obtenerPublicaciones();
+
+    setInterval(() => {
+      this.cdRef.detectChanges(); 
+    }, 60000);
   }
 
   async ionViewWillEnter() {
@@ -50,6 +60,7 @@ export class HomePage implements OnInit {
 
   async obtenerPublicaciones() {
     this.publicaciones = await this.publicacionesService.cargarPublicaciones();
+    console.log(`Publicaciones obtenidas:` , this.publicaciones.length);
   }
 
   // ESTE ES EL MÉTODO QUE TE FALTABA
@@ -100,18 +111,22 @@ export class HomePage implements OnInit {
     
   }
 
-  getColorPorHorario(fecha: Date | string): string {
-    const date = new Date(fecha);
-    const hora = date.getHours();
+  getColorPorHorario(fecha: any): string {
+    const timeStamp = typeof fecha === 'number' ? fecha : Number(fecha);
 
-    if (hora >= 0 && hora < 6) {
-      return 'bg-madrugada'; 
-    } else if (hora >= 6 && hora < 12) {
-      return 'bg-manana';
-    } else if (hora >= 12 && hora < 18){
-      return 'bg-tarde'; 
-    } else {
-      return 'bg-noche'
+    if (isNaN(timeStamp) || timeStamp <= 0) {
+      console.warn('Fecha inválida:', fecha);
+      return 'bg-noche';
     }
+
+    // Creamos un objeto Date basado en el string guardado
+    // JS ajustará esto automáticamente a la zona horaria de tu PC
+    const fechaPublicacion = new Date(fecha);
+    const hora = fechaPublicacion.getHours();
+
+    if (hora >= 0 && hora < 6) return 'bg-madrugada';
+    if (hora >= 6 && hora < 12) return 'bg-manana';
+    if (hora >= 12 && hora < 18) return 'bg-tarde';
+    return 'bg-noche';
   }
 }
