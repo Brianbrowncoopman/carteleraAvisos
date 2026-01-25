@@ -4,6 +4,7 @@ const config: CapacitorConfig = {
   appId: 'io.ionic.starter',
   appName: 'CarteleraAvisos',
   webDir: 'www'
+  
 };
 
 export default config;

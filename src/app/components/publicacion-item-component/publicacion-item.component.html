@@ -1,3 +1,4 @@
+<!-- Componente para mostrar un item de publicación -->
 <ion-card (click)="verDetalle()" [ngClass]="getColorPorHorario(p.fecha)" style="cursor: pointer; margin-bottom: 15px;">
   <ion-card-content style="padding: 8px;">
     <ion-list lines="none" style="background: transparent;">
@@ -6,9 +7,11 @@
           <img [src]="p.imagen" alt="Foto aviso" style="object-fit: cover;"/>
         </ion-thumbnail>
         <ion-label>
+          <!-- Mostrar la fecha y el título de la publicación -->
           <p><ion-note style="color: #444;">Cuando: {{ p.fecha | date: 'dd/MM/yyyy HH:mm' }}</ion-note></p>
           <h2 style="font-weight: bold; font-size: 1.1em; color: #000;">Que: {{ p.titulo }}</h2>
         </ion-label>
+        <!-- Botón para eliminar la publicación -->
         <ion-button slot="end" color="danger" fill="clear" (click)="$event.stopPropagation(); confirmarEliminacion(p.id)">
           <ion-icon name="trash-outline"></ion-icon>
         </ion-button>
@@ -16,7 +19,7 @@
     </ion-list>
   </ion-card-content>
 </ion-card>
-
+<!-- Modal para mostrar el detalle de la publicación -->
 <ion-modal [isOpen]="isModalOpen" (ionModalDidDismiss)="isModalOpen = false">
   <ng-template>
     <ion-header>
@@ -27,7 +30,7 @@
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-
+<!-- Modal para mostrar el detalle de la publicación -->
     <ion-content class="ion-padding">
       <div class="ion-text-center">
         <img [src]="p.imagen" style="width: 100%; max-height: 300px; border-radius: 12px; object-fit: contain;"/>
